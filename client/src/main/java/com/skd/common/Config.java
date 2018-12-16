@@ -1,12 +1,13 @@
 package com.skd.common;
 
 import com.skd.util.ConfigUtil;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 
+/**
+ * @Description
+ * @Author virgosnail
+ * @Date 2018/12/15 17:06
+ */
 
-@PropertySource("conf.properties")
-@ConfigurationProperties(prefix = "server")
 public class Config {
 
     public static Config config;

@@ -1,8 +1,14 @@
 package com.skd.util;
 
 import com.skd.common.Config;
+import java.io.File;
 
-public class ServerUtil {
+/**
+ * @Description
+ * @Author virgosnail
+ * @Date 2018/12/15 17:06
+ */
+public class FileUtil {
 
     public static String getURL()
     {
@@ -17,6 +23,11 @@ public class ServerUtil {
     public static String getRelativePath(String absolutePath)
     {
 
-        return "http://" ;
+        Config config = Config.getInstance();
+        String rootPath = config.getRootPath();
+        String relativePath = absolutePath.replace(rootPath + File.separator," ").trim();
+        return relativePath ;
     }
+
+
 }

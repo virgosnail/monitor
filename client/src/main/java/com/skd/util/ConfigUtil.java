@@ -3,6 +3,11 @@ package com.skd.util;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * @Description
+ * @Author virgosnail
+ * @Date 2018/12/15 17:06
+ */
 public class ConfigUtil
 {
 	private static ConfigUtil common;

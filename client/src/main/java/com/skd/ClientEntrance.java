@@ -4,14 +4,19 @@ import com.skd.manager.Monitor;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
- * Hello world!
- *
+ * @Description
+ * @Author virgosnail
+ * @Date 2018/12/15 17:06
  */
 public class ClientEntrance
 {
-    public static void main ( String[] args ) throws Exception
+    public static void main ( String[] args )
     {
-        PropertyConfigurator.configure(ClientEntrance.class.getClassLoader().getResourceAsStream("config/log4j.properties"));
-        Monitor.getInstance().monitor();
+        try {
+            PropertyConfigurator.configure(ClientEntrance.class.getClassLoader().getResourceAsStream("config/log4j.properties"));
+            Monitor.getInstance().monitor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -2,27 +2,32 @@ package com.skd.util;
 
 import com.skd.common.Constant;
 import com.skd.common.Event;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * @Description
+ * @Author virgosnail
+ * @Date 2018/12/15 17:06
+ */
 public class HttpUtil2
 {
 	private static Logger log = LoggerFactory.getLogger(HttpUtil2.class);
-	// org.apache.http.client.HttpClient;
-	// 创建一个httpclient对象
-	private static HttpClient httpclient = HttpClients.createDefault();
-	
+	/**
+	 * org.apache.commons.httpclient.HttpClient
+ 	 */
+	private static HttpClient httpClient = new HttpClient();
+
 	/**
 	 * @param event  0:删除  1：新增  2：修改
 	 * @param file
@@ -31,52 +36,33 @@ public class HttpUtil2
 	 * @Author Administrator
 	 * @Date 2018年11月11日
 	 */
-	public static void doPost(Event event, File file)
+	public static void doPostMethod(Event event, File file)
 	{
 		try
 		{
-			// 创建http的发送方式对象，是GET还是POST
-            String url = ServerUtil.getURL();
-            HttpPost httppost = new HttpPost(url);
-			log.info(" URL: " + url);
-
-			// 创建要发送的实体，就是key-value的这种结构，借助于这个类，可以实现文件和参数同时上传
-			MultipartEntityBuilder fileEntity = MultipartEntityBuilder.create();
-
-			// 设置编码
-			Charset charset = Charset.forName(Constant.CHARSET);
-			fileEntity.setCharset(charset);
-
-			// 追加要发送的文本信息和文件信息
-			fileEntity.addTextBody(Constant.TYPE, event.getValue());
-            String relativePath = ServerUtil.getRelativePath(file.getAbsolutePath());
-            fileEntity.addTextBody(Constant.FILEPATH, relativePath);
-
-			// 删除文件时不发送文件对象
+			PostMethod post = new PostMethod(FileUtil.getURL());
+			post.setRequestHeader("Content-Type","application/json");
+			List<Part> list = new ArrayList<>();
+			list.add(new StringPart(Constant.TYPE, event.getValue()));
+			list.add(new StringPart(Constant.RELATIVE_PATH, file.getPath()));
+			
 			if (!Event.FILE_DELETE.equals(event))
 			{
-				fileEntity.addPart(Constant.FILE, new FileBody(file));
+				list.add(new FilePart(Constant.FILE, file));
 			}
-
-			httppost.setEntity(fileEntity.build());
-			log.info("TYPE： " + event.getValue());
-			log.info("FILEPATH： " + relativePath);
-			log.info("FILE： " + file);
-
-			// 执行httppost对象，从而获得信息
-			HttpResponse response = httpclient.execute(httppost);
-
-			HttpEntity resEntity = response.getEntity();
-
-			// 获得返回来的信息，转化为字符串string
-			String respopnse = EntityUtils.toString(resEntity);
-			log.info("respopnse: " + respopnse);
-
+			Part[] parts = new Part[list.size()];
+			list.toArray();
+			post.setRequestEntity(new MultipartRequestEntity(parts, post.getParams()));
+			
+			log.info("request： " + post);
+			
+			httpClient.executeMethod(post);
+			String response = post.getResponseBodyAsString();
+			log.info("respopnse: " + response);
 		} catch (Exception e)
 		{
-			log.error("doPost occur a exception", e);
+			log.error("doPostMethod occur a exception", e);
 		}
 	}
-
 
 }
