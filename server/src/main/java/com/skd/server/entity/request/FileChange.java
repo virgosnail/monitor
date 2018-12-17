@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class FileChange {
 
-    private String isDir;
+    private Boolean isDir;
     private String type;
     private String relativePath;
 

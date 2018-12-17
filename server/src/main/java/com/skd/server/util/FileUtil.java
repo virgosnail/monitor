@@ -51,20 +51,6 @@ public class FileUtil {
         return true;
     }
 
-    /**
-     * 删除指定路径的文件
-     * @param absolutePath
-     * @return
-     */
-    public static boolean delete(String absolutePath){
-        File tempFile = new File(absolutePath);
-        if (tempFile.exists()) {
-            tempFile.delete();
-        } else {
-            log.warn("deleted file not exist");
-        }
-        return true;
-    }
 
     /**
      * 关闭流

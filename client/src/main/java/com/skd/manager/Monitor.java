@@ -70,12 +70,6 @@ public class Monitor {
                 log.info("onDirectoryDelete "+file.getAbsolutePath());
                 sendEvent(Event.FILE_DELETE, file,true, false);
             }
-
-            @Override
-            public void onFileDelete(File file) {
-                log.info("onFileDelete"+file.getAbsolutePath());
-                sendEvent(Event.FILE_DELETE, file, false, false);
-            }
             
             @Override
             public void onFileCreate(File file) {
@@ -87,6 +81,12 @@ public class Monitor {
             public void onFileChange(File file) {
                 log.info("onFileChange"+file.getAbsolutePath());
                 sendEvent(Event.FILE_CHANGE, file, false, true);
+            }
+
+            @Override
+            public void onFileDelete(File file) {
+                log.info("onFileDelete"+file.getAbsolutePath());
+                sendEvent(Event.FILE_DELETE, file, false, false);
             }
 
             @Override

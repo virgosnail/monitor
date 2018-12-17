@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -24,44 +25,63 @@ public class FileServiceImpl implements FileService {
     private Config config;
 
     @Override
-    public boolean add(FileChange fileInfo, MultipartFile file) {
-        boolean result;
+    public boolean addFile(FileChange fileInfo, MultipartFile file) {
+        boolean result = false;
         try {
             String relativePath = fileInfo.getRelativePath();
             String rootPath = config.getRootPath();
             String absolutePath = FileUtil.getAbsolutePath(rootPath, relativePath);
-            result = FileUtil.write(absolutePath, file.getInputStream());
-            log.info("add file :" + relativePath);
+            if (fileInfo.getIsDir()){
+                File tempFile = new File(absolutePath);
+                if (!tempFile.exists()){
+                    result = tempFile.mkdirs();
+                }
+            } else {
+                result = FileUtil.write(absolutePath, file.getInputStream());
+            }
+            log.info("addFile file :" + absolutePath);
         } catch (IOException e) {
-            log.error("", e);
+            log.error("addFile occur a exception", e);
             result = false;
         }
         return result;
     }
 
     @Override
-    public boolean modify(FileChange fileInfo, MultipartFile file) {
+    public boolean modifyFile(FileChange fileInfo, MultipartFile file) {
         boolean result;
         try {
             String relativePath = fileInfo.getRelativePath();
             String rootPath = config.getRootPath();
             String absolutePath = FileUtil.getAbsolutePath(rootPath, relativePath);
-            result = FileUtil.write(absolutePath, file.getInputStream());
-            log.info("modify file :" + relativePath);
+            if (fileInfo.getIsDir()){
+                result = true;
+            } else {
+                result = FileUtil.write(absolutePath, file.getInputStream());
+            }
+            log.info("modifyFile file :" + absolutePath);
         } catch (IOException e) {
-            log.error("", e);
+            log.error("modifyFile occur a exception", e);
             result = false;
         }
         return result;
     }
 
     @Override
-    public boolean delete(FileChange fileInfo) {
+    public boolean deleteFile(FileChange fileInfo) {
+        boolean delete;
         String relativePath = fileInfo.getRelativePath();
         String rootPath = config.getRootPath();
         String absolutePath = FileUtil.getAbsolutePath(rootPath, relativePath);
-        boolean delete = FileUtil.delete(absolutePath);
-        log.info("delete file :" + relativePath);
+        File file = new File(absolutePath);
+        if (file.exists()){
+            delete = file.delete();
+        } else {
+            delete = true;
+            log.warn("file not exist :" + absolutePath);
+        }
+        log.info("deleteFile file :" + absolutePath);
         return delete;
     }
+
 }

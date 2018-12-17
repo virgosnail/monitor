@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 /**
@@ -48,11 +47,9 @@ public class HttpUtil
 		try
 		{
 			// 创建http的发送方式对象，是GET还是POST
-            String url = FileUtil.getURL();
+            String url = FileUtil.getURL(hasFile);
             HttpPost httppost = new HttpPost(url);
 			log.info(" URL: " + url);
-			httppost.addHeader("Charset",Constant.CHARSET);
-			httppost.addHeader("Content-Disposition","attachment;filename=UTF-8"+URLEncoder.encode(file.getName(),"UTF-8"));
 			HttpEntity httpEntity = createHttpEntity(event, file, isDir, hasFile);
 			Header contentType = httpEntity.getContentType();
 			Header contentEncoding = httpEntity.getContentEncoding();
@@ -80,7 +77,7 @@ public class HttpUtil
 	 * @return
 	 */
 	public static HttpEntity createHttpEntity(Event event, File file, boolean isDir, boolean hasFile){
-		HttpEntity httpEntity = null;
+		HttpEntity httpEntity;
 		if (hasFile){
 			httpEntity = createFileEntity(event,file,isDir);
 		} else {
@@ -127,10 +124,12 @@ public class HttpUtil
 		log.info("relative_path： " + relativePath);
 		fileEntity.addTextBody(Constant.ISDIR, String.valueOf(isDir),ContentType.APPLICATION_JSON);
 		log.info("isDir： " + isDir);
-		if (Event.FILE_CREATE.equals(event) || Event.FILE_CHANGE.equals(event)){
-//			fileEntity.addPart(Constant.FILE, new FileBody(file,ContentType.create("multipart/form-data","UTF-8"),file.getName()));
-			fileEntity.addPart(Constant.FILE, new FileBody(file,ContentType.APPLICATION_OCTET_STREAM));
-		}
+//		if (Event.FILE_CREATE.equals(event) || Event.FILE_CHANGE.equals(event)){
+////			fileEntity.addPart(Constant.FILE, new FileBody(file,ContentType.create("multipart/form-data","UTF-8"),file.getName()));
+////			fileEntity.addPart(Constant.FILE, new FileBody(file,ContentType.APPLICATION_OCTET_STREAM));
+//			fileEntity.addPart(Constant.FILE, new FileBody(file));
+//		}
+		fileEntity.addPart(Constant.FILE, new FileBody(file));
 		log.info("file： " + file);
 		HttpEntity httpEntity = fileEntity.build();
 		return httpEntity;

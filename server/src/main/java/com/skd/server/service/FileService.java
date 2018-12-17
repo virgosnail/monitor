@@ -10,25 +10,26 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface FileService {
     /**
-     * 添加文件
+     * 添加文件，文件夹
      * @param fileInfo
      * @param file
      * @return
      */
-    boolean add(FileChange fileInfo, MultipartFile file);
+    boolean addFile(FileChange fileInfo, MultipartFile file);
 
     /**
-     * 修改文件
+     * 修改文件，文件夹
      * @param fileInfo
      * @param file
      * @return
      */
-    boolean modify(FileChange fileInfo, MultipartFile file);
+    boolean modifyFile(FileChange fileInfo, MultipartFile file);
 
     /**
-     * 删除文件
+     * 删除文件，文件夹
      * @param fileInfo
      * @return
      */
-    boolean delete(FileChange fileInfo);
+    boolean deleteFile(FileChange fileInfo);
+
 }

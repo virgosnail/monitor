@@ -10,10 +10,15 @@ import java.io.File;
  */
 public class FileUtil {
 
-    public static String getURL()
+    public static String getURL(boolean hasFile)
     {
         Config config = Config.getInstance();
-        return "http://" + config.getIp() + ":" + config.getPort() + config.getUrl();
+        if (hasFile){
+            return "http://" + config.getIp() + ":" + config.getPort() + config.getFileUrl();
+        } else {
+            return "http://" + config.getIp() + ":" + config.getPort() + config.getJsonUrl();
+        }
+
     }
 
     /**

@@ -15,7 +15,8 @@ public class Config {
     private String rootPath;
     private String ip;
     private String port;
-    private String url;
+    private String jsonUrl;
+    private String fileUrl;
 
     public static Config getInstance(){
         if (null == config){
@@ -33,11 +34,13 @@ public class Config {
         String rootPath = common.getValue("server.rootPath");
         String ip = common.getValue("server.ip");
         String port = common.getValue("server.port");
-        String url = common.getValue("server.url");
+        String jsonUrl = common.getValue("server.jsonUrl");
+        String fileUrl = common.getValue("server.fileUrl");
         this.rootPath = rootPath;
         this.ip = ip;
         this.port = port;
-        this.url = url;
+        this.jsonUrl = jsonUrl;
+        this.fileUrl = fileUrl;
     }
 
     public String getRootPath() {
@@ -64,11 +67,19 @@ public class Config {
         this.port = port;
     }
 
-    public String getUrl() {
-        return url;
+    public String getJsonUrl() {
+        return jsonUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setJsonUrl(String jsonUrl) {
+        this.jsonUrl = jsonUrl;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 }
