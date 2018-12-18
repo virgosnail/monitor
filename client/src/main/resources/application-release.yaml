@@ -1,8 +1,8 @@
 config:
 #    监听根目录
-    rootPath: D:\\monitor\\a
+    rootPath: D:\monitor\a
 #    服务器IP
-    serverIp: localhost
+    serverIp: 127.0.0.1
 #    服务器端口
     serverPort: 5235
 #    传输json时的接口路径
@@ -12,4 +12,4 @@ config:
 #    轮询文件的时间间隔 单位毫秒
     interval: 1000
 #    过滤的文件类型，大小写不敏感
-    ignoreTypes: js,css,html
+    ignoreTypes: 

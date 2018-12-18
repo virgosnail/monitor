@@ -47,12 +47,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
-<!--        &lt;!&ndash;使用logback&ndash;&gt;
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-        </dependency>-->
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

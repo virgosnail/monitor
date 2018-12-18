@@ -1,12 +1,7 @@
-server:
-  port: 5235
-
-config:
-  rootPath: D:\monitor\b
-
 spring:
-  http:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
+  profiles:
+    active: release
+
+# log4j2 config
+#logging:
+#  config: classpath:log4j2.yml

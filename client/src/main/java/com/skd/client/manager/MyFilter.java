@@ -26,10 +26,13 @@ public class MyFilter implements IOFileFilter {
             if (null == monitorConfig && Context.getContext().containsBean("monitorConfig")){
                 monitorConfig = (MonitorConfig)Context.getContext().getBean("monitorConfig");
             }
-            String[] ignoreTypes = monitorConfig.getIgnoreTypes().split(",");
-            for (String type : ignoreTypes) {
-                if (filename.toLowerCase().endsWith(type.toLowerCase())) {
-                    return false;
+            String ignoreTypes = monitorConfig.getIgnoreTypes();
+            if (null != ignoreTypes && !ignoreTypes.equals("")){
+                String[] types = ignoreTypes.split(",");
+                for (String type : types) {
+                    if (filename.toLowerCase().endsWith(type.toLowerCase())) {
+                        return false;
+                    }
                 }
             }
         }

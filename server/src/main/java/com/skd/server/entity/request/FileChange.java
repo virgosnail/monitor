@@ -14,4 +14,16 @@ public class FileChange {
     private String type;
     private String relativePath;
 
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    public void setRelativePath(String relativePath) {
+        String os = System.getProperty("os.name");
+        if (os.toLowerCase().startsWith("linux")){
+            this.relativePath = relativePath.replaceAll("\\\\","/");
+        } else {
+            this.relativePath = relativePath;
+        }
+    }
 }
