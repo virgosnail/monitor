@@ -2,39 +2,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.skd</groupId>
     <artifactId>client</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>client</name>
-    <description>client project for Spring Boot</description>
+    <description>client for file monitor</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <encoding>UTF-8</encoding>
+        <maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
+        <maven-jar-plugin-version>3.1.0</maven-jar-plugin-version>
+        <maven-source-plugin-version>3.0.1</maven-source-plugin-version>
+        <maven-assembly-plugin-version>3.1.0</maven-assembly-plugin-version>
+        <maven-dependency-plugin-version>3.1.0</maven-dependency-plugin-version>
+        <maven-resources-plugin-version>3.1.0</maven-resources-plugin-version>
     </properties>
 
     <dependencies>
+        <!--spring boot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
+        <!--test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--log4j2-->
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
-
+        <!--http client-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -58,19 +67,19 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
-
+        <!--json-->
         <dependency>
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>
             <version>2.2.2</version>
             <classifier>jdk15</classifier>
         </dependency>
-
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <!--configuration-->
         <!-- 通过资源文件注入属性配置 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -80,12 +89,108 @@
     </dependencies>
 
     <build>
+        <!-- 生成的项目jar包的名字-->
+        <finalName>client</finalName>
+        <!--源代码路径-->
+        <sourceDirectory>src/main/java</sourceDirectory>
+
+        <!--maven-resources-plugin 插件打包resource文件时会参考此节点的配置-->
+        <resources>
+            <!--resource 子节点可通过配置将制定目录的文件在打包后拷贝到制定目录-->
+            <!-- 把src/main/resources目录下所有的文件拷贝到conf目录中 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>${project.build.directory}/conf</targetPath>
+            </resource>
+
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/application*.yml</include>
+                    <include>**/application*.yaml</include>
+                    <include>**/application*.properties</include>
+                </includes>
+            </resource>
+
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/application*.yml</exclude>
+                    <exclude>**/application*.yaml</exclude>
+                    <exclude>**/application*.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <plugins>
+            <!--编译插件-->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin-version}</version>
+                <configuration>
+                    <encoding>${encoding}</encoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
             </plugin>
+
+            <!--将项目的源代码的class文件打包到一个jar包-->
+            <!--jar包默认在target目录下-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin-version}</version>
+                <configuration>
+                    <archive>
+                        <!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <!-- 是否要把第三方jar放到manifest的classpath中 -->
+                            <addClasspath>true</addClasspath>
+                            <!-- 生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/ -->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!-- 应用的main class -->
+                            <mainClass>com.skd.client.ClientApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- 用于拷贝maven依赖的plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- 把依赖的所有maven jar包拷贝到lib目录中 -->
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 用于拷贝resource的plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin-version}</version>
+                <!--<configuration>-->
+                    <!--<encoding>${encoding}</encoding>-->
+                    <!--<outputDirectory>${project.build.directory}/conf</outputDirectory>-->
+                <!--</configuration>-->
+            </plugin>
+
         </plugins>
+
     </build>
 
 </project>
