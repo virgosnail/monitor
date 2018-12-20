@@ -96,14 +96,9 @@
 
         <!--maven-resources-plugin 插件打包resource文件时会参考此节点的配置-->
         <resources>
-            <!--resource 子节点可通过配置将制定目录的文件在打包后拷贝到制定目录-->
-            <!-- 把src/main/resources目录下所有的文件拷贝到conf目录中 -->
+            <!--这两个resource节点负责把配置文件拷贝到classes目录下，保证运行时可以找到配置文件-->
             <resource>
-                <directory>src/main/resources</directory>
-                <targetPath>${project.build.directory}/conf</targetPath>
-            </resource>
-
-            <resource>
+                <!--开启filter功能，将路径中的属性名替换为对应的属性值-->
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
                 <includes>
@@ -120,6 +115,14 @@
                     <exclude>**/application*.yaml</exclude>
                     <exclude>**/application*.properties</exclude>
                 </excludes>
+            </resource>
+
+            <!--compile 和 package 时都会使用resource节点的配置-->
+            <!--resource 节点可通过配置将制定目录的文件在打包后拷贝到制定目录-->
+            <!--如果只有这一个resource节点，或者如果把这个resource节点配置在最前面，则会直接把配置文件打包到conf目录classes目录下不会有配置文件，导致IDEA运行时找不到配置文件-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>${project.build.directory}/conf</targetPath>
             </resource>
         </resources>
 
@@ -154,6 +157,10 @@
                             <!-- 应用的main class -->
                             <mainClass>com.skd.client.ClientApplication</mainClass>
                         </manifest>
+                        <!--将资源文件目录添加到classpath中，打包后运行项目时则会在该目录下加载配置文件-->
+                        <manifestEntries>
+                            <Class-Path>conf/</Class-Path>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -183,10 +190,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven-resources-plugin-version}</version>
-                <!--<configuration>-->
-                    <!--<encoding>${encoding}</encoding>-->
-                    <!--<outputDirectory>${project.build.directory}/conf</outputDirectory>-->
-                <!--</configuration>-->
             </plugin>
 
         </plugins>
