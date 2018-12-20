@@ -31,6 +31,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--test-->
         <dependency>
@@ -93,7 +99,6 @@
         <finalName>client</finalName>
         <!--源代码路径-->
         <sourceDirectory>src/main/java</sourceDirectory>
-
         <!--maven-resources-plugin 插件打包resource文件时会参考此节点的配置-->
         <resources>
             <!--这两个resource节点负责把配置文件拷贝到classes目录下，保证运行时可以找到配置文件-->
@@ -105,6 +110,7 @@
                     <include>**/application*.yml</include>
                     <include>**/application*.yaml</include>
                     <include>**/application*.properties</include>
+                    <!--<include>**/*.xml</include>-->
                 </includes>
             </resource>
 
@@ -125,7 +131,6 @@
                 <targetPath>${project.build.directory}/conf</targetPath>
             </resource>
         </resources>
-
         <plugins>
             <!--编译插件-->
             <plugin>

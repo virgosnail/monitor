@@ -2,9 +2,9 @@ config:
 #    监听根目录
     rootPath: D:\monitor\a
 #    服务器IP
-    serverIp: 127.0.0.1
+    serverIp: 39.107.227.146
 #    服务器端口
-    serverPort: 5235
+    serverPort: 3389
 #    传输json时的接口路径
     jsonUrl: /file/infoChanged
 #    传输文件时的接口路径
