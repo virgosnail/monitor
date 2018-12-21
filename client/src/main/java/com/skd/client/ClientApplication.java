@@ -1,7 +1,6 @@
 package com.skd.client;
 
 import com.skd.client.common.MonitorConfig;
-import com.skd.client.manager.Context;
 import com.skd.client.manager.Monitor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +14,6 @@ public class ClientApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(ClientApplication.class, args);
-        Context.setContext(context);
         context.getBean(Monitor.class).monitor();
     }
 

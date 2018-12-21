@@ -4,6 +4,7 @@ package com.skd.client.manager;
 import com.skd.client.common.MonitorConfig;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 
@@ -12,9 +13,13 @@ import java.io.File;
  * @Author virgosnail
  * @Date 2018/12/15 17:06
  */
+@Component
 public class MyFilter implements IOFileFilter {
 
-
+    /**
+     * TODO 注入失败什么原因？
+     * 在 monitor() 中 FileFilterUtils.and(new MyFilter);没有使用注入bean的方式
+     */
     @Autowired
     private MonitorConfig monitorConfig;
 
@@ -23,9 +28,6 @@ public class MyFilter implements IOFileFilter {
         String filename = file.getName();
 
         if (!file.isDirectory()) {
-            if (null == monitorConfig && Context.getContext().containsBean("monitorConfig")){
-                monitorConfig = (MonitorConfig)Context.getContext().getBean("monitorConfig");
-            }
             String ignoreTypes = monitorConfig.getIgnoreTypes();
             if (null != ignoreTypes && !ignoreTypes.equals("")){
                 String[] types = ignoreTypes.split(",");

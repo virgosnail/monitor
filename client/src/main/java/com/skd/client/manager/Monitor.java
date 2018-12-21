@@ -30,6 +30,9 @@ public class Monitor {
 	@Autowired
     private HttpManager httpManager;
 
+	@Autowired
+    private MyFilter myFilter;
+
     public void monitor() {
         String rootpath = monitorConfig.getRootPath();
         File rootFile = new File(rootpath);
@@ -41,7 +44,7 @@ public class Monitor {
         // 将文件路径设置为统一格式
         monitorConfig.setRootPath(rootpath);
         log.info("rootpath: " + rootpath );
-        FileFilter fileFilter = FileFilterUtils.and(new MyFilter());
+        FileFilter fileFilter = FileFilterUtils.and(myFilter);
         FileAlterationObserver observer = new FileAlterationObserver(rootpath, fileFilter);
         observer.addListener(new FileAlterationListener() {
 
