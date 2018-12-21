@@ -15,7 +15,7 @@
     </parent>
     <groupId>com.skd</groupId>
     <artifactId>monitor</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>monitor</name>
     <description>monitor project for Spring Boot</description>
 
