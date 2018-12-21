@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.skd</groupId>
     <artifactId>server</artifactId>
-    <version>0.0.1</version>
+    <version>1.0</version>
     <name>server</name>
     <description>client for file monitor</description>
 
@@ -67,42 +67,11 @@
     </dependencies>
 
     <build>
-        <!-- 生成的项目jar包的名字-->
+        <!-- 生成的项目压缩包的名字-->
         <finalName>server</finalName>
         <!--源代码路径-->
         <sourceDirectory>src/main/java</sourceDirectory>
-
         <!--maven-resources-plugin 插件打包resource文件时会参考此节点的配置-->
-        <resources>
-            <!--这两个resource节点负责把配置文件拷贝到classes目录下，保证运行时可以找到配置文件-->
-            <resource>
-                <!--开启filter功能，将路径中的属性名替换为对应的属性值-->
-                <filtering>true</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/application*.yml</include>
-                    <include>**/application*.yaml</include>
-                    <include>**/application*.properties</include>
-                </includes>
-            </resource>
-
-            <resource>
-                <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/application*.yml</exclude>
-                    <exclude>**/application*.yaml</exclude>
-                    <exclude>**/application*.properties</exclude>
-                </excludes>
-            </resource>
-
-            <!--compile 和 package 时都会使用resource节点的配置-->
-            <!--resource 节点可通过配置将制定目录的文件在打包后拷贝到制定目录-->
-            <!--如果只有这一个resource节点，或者如果把这个resource节点配置在最前面，则会直接把配置文件打包到conf目录classes目录下不会有配置文件，导致IDEA运行时找不到配置文件-->
-            <resource>
-                <directory>src/main/resources</directory>
-                <targetPath>${project.build.directory}/conf</targetPath>
-            </resource>
-        </resources>
 
         <plugins>
             <!--编译插件-->
@@ -126,49 +95,60 @@
                 <configuration>
                     <archive>
                         <!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
-                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <addMavenDescriptor>true</addMavenDescriptor>
                         <manifest>
                             <!-- 是否要把第三方jar放到manifest的classpath中 -->
                             <addClasspath>true</addClasspath>
-                            <!-- 生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/ -->
-                            <classpathPrefix>lib/</classpathPrefix>
+                            <!-- 生成的manifest中classpath的前缀，填写依赖jar包相对于项目jar包的路径-->
+                            <!--我会把项目的jar包也打到lib目录下，所以这里使用当前目录-->
+                            <classpathPrefix>./</classpathPrefix>
                             <!-- 应用的main class -->
                             <mainClass>com.skd.server.ServerApplication</mainClass>
                         </manifest>
                         <!--将资源文件目录添加到classpath中，打包后运行项目时则会在该目录下加载配置文件-->
                         <manifestEntries>
-                            <Class-Path>conf/</Class-Path>
+                            <!--填写配置文件相对于项目jar包的路径-->
+                            <!--我的项目jar包在lib目录下，配置文件在和lib同级的conf目录下-->
+                            <Class-Path>../conf/</Class-Path>
                         </manifestEntries>
                     </archive>
+                    <!--项目打包为jar包时排除这些文件，如果将配置文件打到jar包，则会优先读取jar包中的配置文件，不会读取conf目录下的配置文件-->
+                    <!--注意这玩意从编译结果目录开始算目录结构-->
+                    <excludes>
+                        <exclude>/*.yaml</exclude>
+                        <exclude>/*.yml</exclude>
+                        <exclude>/*.xml</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
 
-            <!-- 用于拷贝maven依赖的plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin-version}</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin-version}</version>
+
+                <configuration>
+                    <!--jar包名字是否在finalName后追加AssemblyId-->
+                    <appendAssemblyId>true</appendAssemblyId>
+                    <descriptors>
+                        <!--xml文件中配置了打包的相关配置-->
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
+                        <!--名字任意-->
+                        <id>make-assembly</id>
+                        <!-- 绑定到package生命周期阶段上 -->
                         <phase>package</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <!-- 只运行一次 -->
+                            <goal>single</goal>
                         </goals>
-                        <configuration>
-                            <!-- 把依赖的所有maven jar包拷贝到lib目录中 -->
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- 用于拷贝resource的plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin-version}</version>
-            </plugin>
         </plugins>
+
     </build>
 </project>

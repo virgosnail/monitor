@@ -54,6 +54,7 @@ public class HttpManager
 	{
 		try
 		{
+
 			// 创建http的发送方式对象，是GET还是POST
             String url =  getURL(hasFile);
             HttpPost httppost = new HttpPost(url);
