@@ -58,39 +58,9 @@ public class HttpUtil {
             // 追加要发送的文本信息并设置编码格式
             fileEntity.addTextBody(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()), ContentType.APPLICATION_JSON);
         }
-        final ContentType contentType = getContentType(file);
-        log.info(contentType.getMimeType());
-        fileEntity.addPart(Constant.FILE, new FileBody(file,contentType));
+        fileEntity.addPart(Constant.FILE, new FileBody(file,ContentType.APPLICATION_OCTET_STREAM));
         HttpEntity httpEntity = fileEntity.build();
         return httpEntity;
-    }
-
-    private static ContentType getContentType(File file){
-        ContentType contentType = ContentType.APPLICATION_OCTET_STREAM;
-        String fileName = file.getName();
-        if (fileName.contains(".")){
-            String type = fileName.toLowerCase().split("\\.")[1];
-            switch (type) {
-                case "xml":
-                    contentType = ContentType.APPLICATION_XML;
-                    break;
-                case "jpg":
-                case "jpeg":
-                    contentType = ContentType.IMAGE_JPEG;
-                    break;
-                case "png":
-                    contentType = ContentType.IMAGE_PNG;
-                    break;
-                case "gif":
-                    contentType = ContentType.IMAGE_GIF;
-                    break;
-                default:
-                    contentType = ContentType.MULTIPART_FORM_DATA;
-                    break;
-            }
-
-        }
-        return contentType;
     }
     /**
      *  获取URL
