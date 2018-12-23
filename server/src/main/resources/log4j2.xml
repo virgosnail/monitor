@@ -48,7 +48,7 @@
 
     <Loggers>
 
-        <Logger name="org.springframework" level="WARN" additivity="false">
+        <Logger name="org.springframework" level="info" additivity="false">
             <AppenderRef ref="console"/>
         </Logger>
 
@@ -59,7 +59,7 @@
         </Logger>
 
         <!--日志信息输出的最低级别-->
-        <Root level="debug">
+        <Root level="info">
         </Root>
 
     </Loggers>

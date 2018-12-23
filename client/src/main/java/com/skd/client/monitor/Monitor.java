@@ -1,8 +1,9 @@
-package com.skd.client.manager;
+package com.skd.client.monitor;
 
 
-import com.skd.client.common.Event;
-import com.skd.client.common.MonitorConfig;
+import com.skd.client.common.EventType;
+import com.skd.client.config.MonitorConfig;
+import com.skd.client.manager.HttpManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -34,18 +35,10 @@ public class Monitor {
     private MyFilter myFilter;
 
     public void monitor() {
-        String rootpath = monitorConfig.getRootPath();
-        File rootFile = new File(rootpath);
-        if (!rootFile.exists() || !rootFile.isDirectory())
-		{
-            return ;
-        }
-        rootpath = rootFile.getAbsolutePath();
-        // 将文件路径设置为统一格式
-        monitorConfig.setRootPath(rootpath);
-        log.info("rootpath: " + rootpath );
+
+        String clientPath = monitorConfig.getClientPath();
         FileFilter fileFilter = FileFilterUtils.and(myFilter);
-        FileAlterationObserver observer = new FileAlterationObserver(rootpath, fileFilter);
+        FileAlterationObserver observer = new FileAlterationObserver(clientPath, fileFilter);
         observer.addListener(new FileAlterationListener() {
 
             @Override
@@ -56,37 +49,37 @@ public class Monitor {
             @Override
             public void onDirectoryCreate(File file) {
                 log.info("onDirectoryCreate "+file.getAbsolutePath());
-                sendEvent(Event.FILE_CREATE, file, true, false);
+                sendEvent(EventType.FILE_CREATE, file, true, false);
             }
 
             @Override
             public void onDirectoryChange(File file) {
                 log.info("onDirectoryChange "+file.getAbsolutePath());
-                sendEvent(Event.FILE_CHANGE, file, true, false);
+                sendEvent(EventType.FILE_CHANGE, file, true, false);
             }
 
             @Override
             public void onDirectoryDelete(File file) {
                 log.info("onDirectoryDelete "+file.getAbsolutePath());
-                sendEvent(Event.FILE_DELETE, file,true, false);
+                sendEvent(EventType.FILE_DELETE, file,true, false);
             }
             
             @Override
             public void onFileCreate(File file) {
                 log.info("onFileCreate"+file.getAbsolutePath());
-                sendEvent(Event.FILE_CREATE, file, false, true);
+                sendEvent(EventType.FILE_CREATE, file, false, true);
             }
 
             @Override
             public void onFileChange(File file) {
                 log.info("onFileChange"+file.getAbsolutePath());
-                sendEvent(Event.FILE_CHANGE, file, false, true);
+                sendEvent(EventType.FILE_CHANGE, file, false, true);
             }
 
             @Override
             public void onFileDelete(File file) {
                 log.info("onFileDelete"+file.getAbsolutePath());
-                sendEvent(Event.FILE_DELETE, file, false, false);
+                sendEvent(EventType.FILE_DELETE, file, false, false);
             }
 
             @Override
@@ -105,8 +98,8 @@ public class Monitor {
 
     }
     
-    private void sendEvent( Event event, File file, boolean isDir, boolean hasFile){
-        httpManager.doPost(event, file, isDir, hasFile);
+    private void sendEvent(EventType event, File file, boolean isDir, boolean hasFile){
+        httpManager.sendFileEvent(event, file, isDir, hasFile);
     }
 }
 

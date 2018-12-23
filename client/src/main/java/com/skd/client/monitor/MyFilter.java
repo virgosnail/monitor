@@ -1,7 +1,7 @@
-package com.skd.client.manager;
+package com.skd.client.monitor;
 
 
-import com.skd.client.common.MonitorConfig;
+import com.skd.client.config.MonitorConfig;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,6 @@ import java.io.File;
 public class MyFilter implements IOFileFilter {
 
     /**
-     * TODO 注入失败什么原因？
      * 在 monitor() 中 FileFilterUtils.and(new MyFilter);没有使用注入bean的方式
      */
     @Autowired

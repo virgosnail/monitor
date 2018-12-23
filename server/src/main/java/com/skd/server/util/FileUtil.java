@@ -1,5 +1,6 @@
 package com.skd.server.util;
 
+import com.skd.server.common.Constant;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -11,6 +12,26 @@ import java.io.*;
  */
 @Slf4j
 public class FileUtil {
+    /**
+     * 将文件路径的文件分隔符转为当前系统的格式
+     * @param oldPath 旧路径
+     * @return
+     */
+    public static String convertFileSeparator(String oldPath){
+        String newPath = oldPath;
+        String os = System.getProperty(Constant.OS_NAME);
+        boolean isWindows = os.toLowerCase().startsWith(Constant.OS_WINDOWS.toLowerCase());
+        boolean isLinux = os.toLowerCase().startsWith(Constant.OS_LINUX.toLowerCase());
+        boolean isMac = os.toLowerCase().startsWith(Constant.OS_MAC.toLowerCase());
+        if ( isLinux || isMac){
+            newPath = oldPath.replaceAll("\\\\","/");
+        } else if ( isWindows){
+            newPath = oldPath.replaceAll("/","\\\\");
+        } else {
+            log.error("sorry,current os type is not supported, os.name is :" + os);
+        }
+        return newPath;
+    }
 
     /**
      * 根据相对路径获取绝对路径
@@ -30,14 +51,18 @@ public class FileUtil {
      */
     public static boolean write(String absolutePath, InputStream is){
         try {
-            File tempFile = new File(absolutePath);
-            if (tempFile.exists()){
-                tempFile.delete();
+            File file = new File(absolutePath);
+            File fileParent = file.getParentFile();
+            if(!fileParent.exists()){
+                fileParent.mkdirs();
             }
-            tempFile.createNewFile();
+            if (file.exists()){
+                file.delete();
+            }
+            file.createNewFile();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
-            BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
             String buf = null;
             while ((buf = br.readLine())!= null){
                 bw.write(buf);

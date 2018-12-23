@@ -5,23 +5,23 @@ package com.skd.client.common;
  * @Author virgosnail
  * @Date 2018/12/15 17:06
  */
-public enum Event
+public enum EventType
 {
-	/**
-	 * 新增文件
-	 */
-	FILE_CREATE("1"),
 	/**
 	 * 删除文件
 	 */
 	FILE_DELETE("0"),
+	/**
+	 * 新增文件
+	 */
+	FILE_CREATE("1"),
 	/**
 	 * 修改文件
 	 */
 	FILE_CHANGE("2");
 
 	String type;
-	Event(String type){
+	EventType(String type){
 		this.type = type;
 	}
 	

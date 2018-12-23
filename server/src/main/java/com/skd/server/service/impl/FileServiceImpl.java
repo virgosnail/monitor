@@ -1,7 +1,7 @@
 package com.skd.server.service.impl;
 
 import com.skd.server.config.Config;
-import com.skd.server.entity.request.FileChange;
+import com.skd.server.entity.request.FileChangeReq;
 import com.skd.server.service.FileService;
 import com.skd.server.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class FileServiceImpl implements FileService {
     private Config config;
 
     @Override
-    public boolean addFile(FileChange fileInfo, MultipartFile file) {
+    public boolean addFile(FileChangeReq fileInfo, MultipartFile file) {
         boolean result = false;
         try {
             String relativePath = fileInfo.getRelativePath();
@@ -48,7 +48,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean modifyFile(FileChange fileInfo, MultipartFile file) {
+    public boolean modifyFile(FileChangeReq fileInfo, MultipartFile file) {
         boolean result;
         try {
             String relativePath = fileInfo.getRelativePath();
@@ -68,7 +68,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean deleteFile(FileChange fileInfo) {
+    public boolean deleteFile(FileChangeReq fileInfo) {
         boolean delete;
         String relativePath = fileInfo.getRelativePath();
         String rootPath = config.getRootPath();

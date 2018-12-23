@@ -1,7 +1,7 @@
 package com.skd.client;
 
-import com.skd.client.common.MonitorConfig;
-import com.skd.client.manager.Monitor;
+import com.skd.client.config.MonitorConfig;
+import com.skd.client.manager.FileServiceManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -14,7 +14,7 @@ public class ClientApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(ClientApplication.class, args);
-        context.getBean(Monitor.class).monitor();
+        context.getBean(FileServiceManager.class).start();
     }
 
 }
