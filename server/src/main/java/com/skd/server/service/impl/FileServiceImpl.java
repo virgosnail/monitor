@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @Description
@@ -27,43 +26,33 @@ public class FileServiceImpl implements FileService {
     @Override
     public boolean addFile(FileChangeReq fileInfo, MultipartFile file) {
         boolean result = false;
-        try {
-            String relativePath = fileInfo.getRelativePath();
-            String rootPath = config.getRootPath();
-            String absolutePath = FileUtil.getAbsolutePath(rootPath, relativePath);
-            if (fileInfo.getIsDir()){
-                File tempFile = new File(absolutePath);
-                if (!tempFile.exists()){
-                    result = tempFile.mkdirs();
-                }
-            } else {
-                result = FileUtil.write(absolutePath, file.getInputStream());
+        String relativePath = fileInfo.getRelativePath();
+        String rootPath = config.getRootPath();
+        String absolutePath = FileUtil.getAbsolutePath(rootPath, relativePath);
+        if (fileInfo.getIsDir()) {
+            File tempFile = new File(absolutePath);
+            if (!tempFile.exists()) {
+                result = tempFile.mkdirs();
             }
-            log.info("addFile file :" + absolutePath);
-        } catch (IOException e) {
-            log.error("addFile occur a exception", e);
-            result = false;
+        } else {
+            result = FileUtil.write(absolutePath, file);
         }
+        log.info("addFile file :" + absolutePath);
         return result;
     }
 
     @Override
     public boolean modifyFile(FileChangeReq fileInfo, MultipartFile file) {
         boolean result;
-        try {
-            String relativePath = fileInfo.getRelativePath();
-            String rootPath = config.getRootPath();
-            String absolutePath = FileUtil.getAbsolutePath(rootPath, relativePath);
-            if (fileInfo.getIsDir()){
-                result = true;
-            } else {
-                result = FileUtil.write(absolutePath, file.getInputStream());
-            }
-            log.info("modifyFile file :" + absolutePath);
-        } catch (IOException e) {
-            log.error("modifyFile occur a exception", e);
-            result = false;
+        String relativePath = fileInfo.getRelativePath();
+        String rootPath = config.getRootPath();
+        String absolutePath = FileUtil.getAbsolutePath(rootPath, relativePath);
+        if (fileInfo.getIsDir()) {
+            result = true;
+        } else {
+            result = FileUtil.write(absolutePath, file);
         }
+        log.info("modifyFile file :" + absolutePath);
         return result;
     }
 
@@ -74,7 +63,7 @@ public class FileServiceImpl implements FileService {
         String rootPath = config.getRootPath();
         String absolutePath = FileUtil.getAbsolutePath(rootPath, relativePath);
         File file = new File(absolutePath);
-        if (file.exists()){
+        if (file.exists()) {
             delete = file.delete();
         } else {
             delete = true;

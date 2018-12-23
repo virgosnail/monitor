@@ -2,6 +2,7 @@ package com.skd.server.util;
 
 import com.skd.server.common.Constant;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
@@ -46,26 +47,27 @@ public class FileUtil {
     /**
      * 将流中的数据写到指定文件，如果文件存在则先删除文件再写入文件
      * @param absolutePath
-     * @param is
+     * @param file
      * @return
      */
-    public static boolean write(String absolutePath, InputStream is){
+    public static boolean write(String absolutePath, MultipartFile file){
         try {
-            File file = new File(absolutePath);
-            File fileParent = file.getParentFile();
+            File distFile = new File(absolutePath);
+            File fileParent = distFile.getParentFile();
             if(!fileParent.exists()){
                 fileParent.mkdirs();
             }
-            if (file.exists()){
-                file.delete();
+            if (distFile.exists()){
+                distFile.delete();
             }
-            file.createNewFile();
-            InputStreamReader isr = new InputStreamReader(is);
+            distFile.createNewFile();
+            InputStreamReader isr = new InputStreamReader(file.getInputStream());
             BufferedReader br = new BufferedReader(isr);
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(distFile));
             String buf = null;
             while ((buf = br.readLine())!= null){
                 bw.write(buf);
+                bw.newLine();
             }
             bw.flush();
             close(bw,br);
