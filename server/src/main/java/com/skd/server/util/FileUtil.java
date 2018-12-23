@@ -61,16 +61,7 @@ public class FileUtil {
                 distFile.delete();
             }
             distFile.createNewFile();
-            InputStreamReader isr = new InputStreamReader(file.getInputStream());
-            BufferedReader br = new BufferedReader(isr);
-            BufferedWriter bw = new BufferedWriter(new FileWriter(distFile));
-            String buf = null;
-            while ((buf = br.readLine())!= null){
-                bw.write(buf);
-                bw.newLine();
-            }
-            bw.flush();
-            close(bw,br);
+            file.transferTo(distFile);
         } catch (Exception e) {
             log.error("write",e);
             return false;

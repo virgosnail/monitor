@@ -1,6 +1,6 @@
 config:
 #    客户端监听根目录
-    clientPath: F:\git\monitor
+    clientPath: D:\monitor\a
 #    服务端同步根目录
     serverPath: D:\monitor\b
 #    服务器IP
