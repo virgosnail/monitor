@@ -1,4 +1,4 @@
-package com.skd.server.entity.request;
+package com.skd.server.model.request;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @Slf4j
-public class ServerPathReq {
+public class ServerConfigReq {
 
     private String serverPath;
+
 }

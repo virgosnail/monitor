@@ -1,8 +1,9 @@
 package com.skd.server.controller;
 
-import com.skd.server.config.Config;
-import com.skd.server.entity.request.FileChangeReq;
-import com.skd.server.entity.request.ServerPathReq;
+import com.skd.server.config.ServerConfig;
+import com.skd.server.model.request.FileChangedReq;
+import com.skd.server.model.request.ServerConfigReq;
+import com.skd.server.model.response.ResponseResult;
 import com.skd.server.service.impl.FileServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,53 +19,53 @@ import java.io.File;
  */
 @Slf4j
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/monitor")
 public class FileController {
 
     @Autowired
     private FileServiceImpl fileService;
 
     @Autowired
-    private Config config;
+    private ServerConfig config;
 
-    @PostMapping("/serverPath")
-    public Boolean serverPath(@RequestBody ServerPathReq request) {
+    @PostMapping("/setConfig")
+    public ResponseResult serverPath(@RequestBody ServerConfigReq request) {
+        ResponseResult result = new ResponseResult();
+        result.setResult(true);
         String serverPath = request.getServerPath();
         config.setRootPath(serverPath);
         File file = new File(serverPath);
         if (file.exists()){
-            log.info("receive serverPath is " + serverPath);
+            log.info("receive serverPath is :{}", serverPath);
         } else {
             file.mkdirs();
-            log.info("dir is not exist, create dir :" + serverPath);
+            log.info("create target directory :{}", serverPath);
         }
-        return true;
+        return result;
     }
 
     /**
-     * 文件的新增和修改，需要携带文件对象
+     * 文件的新增和修改
      *
      * @param file
      * @param fileInfo
      * @return
      */
-    @PostMapping("/dataChanged")
-    public Boolean dataChanged(@RequestParam(value = "file") MultipartFile file, FileChangeReq fileInfo) {
-        log.info("dataChanged");
-        if (null != file) {
-            log.info(file.toString());
-        }
+    @PostMapping("/fileDataChanged")
+    public ResponseResult dataChanged(@RequestParam(value = "file") MultipartFile file, FileChangedReq fileInfo) {
+
         log.info("fileInfo" + fileInfo.toString());
-        boolean result = false;
+        ResponseResult result = new ResponseResult();
+        result.setResult(true);
         switch (fileInfo.getType()) {
             case "1":
-                result = fileService.addFile(fileInfo, file);
+                result.setResult(fileService.addFile(fileInfo, file));
                 break;
             case "2":
-                result = fileService.modifyFile(fileInfo, file);
+                result.setResult(fileService.modifyFile(fileInfo, file));
                 break;
             default:
-                log.warn("file type is :" + fileInfo.getType());
+                log.warn("unknown file type is : {}", fileInfo.getType());
                 break;
         }
         return result;
@@ -76,21 +77,19 @@ public class FileController {
      * @param fileInfo
      * @return
      */
-    @PostMapping("/infoChanged")
-    public Boolean infoChanged(@RequestBody FileChangeReq fileInfo) {
-        log.info("infoChanged");
-        log.info(fileInfo.toString());
-
-        boolean result = false;
+    @PostMapping("/fileInfoChanged")
+    public ResponseResult infoChanged(@RequestBody FileChangedReq fileInfo) {
+        ResponseResult result = new ResponseResult();
+        result.setResult(true);
         switch (fileInfo.getType()) {
             case "0":
-                result = fileService.deleteFile(fileInfo);
+                result.setResult(fileService.deleteFile(fileInfo));
                 break;
             case "1":
-                result = fileService.addFile(fileInfo, null);
+                result.setResult(fileService.addFile(fileInfo, null));
                 break;
             case "2":
-                result = fileService.modifyFile(fileInfo, null);
+                result.setResult( fileService.modifyFile(fileInfo, null));
                 break;
             default:
                 log.warn("file type is :" + fileInfo.getType());

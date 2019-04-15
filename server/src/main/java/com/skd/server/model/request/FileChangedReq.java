@@ -1,4 +1,4 @@
-package com.skd.server.entity.request;
+package com.skd.server.model.request;
 
 import com.skd.server.common.Constant;
 import lombok.Data;
@@ -9,9 +9,9 @@ import lombok.extern.slf4j.Slf4j;
  * @Author virgosnail
  * @Date 2018/12/15 15:00
  */
-@Slf4j
 @Data
-public class FileChangeReq {
+@Slf4j
+public class FileChangedReq {
 
     private String relativePath;
     private Boolean isDir;
@@ -19,7 +19,8 @@ public class FileChangeReq {
 
     /**
      *  对请求当中的文件分割符进行转换
-     * @param relativePath
+     *
+     * @param relativePath  文件路径
      */
     public void setRelativePath(String relativePath) {
         String os = System.getProperty(Constant.OS_NAME);
@@ -31,7 +32,7 @@ public class FileChangeReq {
         } else if ( isWindows){
             this.relativePath = relativePath.replaceAll("/","\\\\");
         } else {
-            log.error("sorry,current os type is not supported, os.name is :" + os);
+            log.warn("sorry,current os type is not supported, os.name is :{}", os);
         }
     }
 }

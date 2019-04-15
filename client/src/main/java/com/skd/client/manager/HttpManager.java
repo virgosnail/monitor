@@ -75,6 +75,10 @@ public class HttpManager {
 
     }
 
+    /**
+     *  发送HTTP请求
+     * @param httppost
+     */
     private void sendPost(HttpPost httppost) {
         try {
             httppost.setConfig(RequestConfig.custom()

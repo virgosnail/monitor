@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Data
-public class Config {
+public class ServerConfig {
+    /** 服务端文件的保目录 */
     private String rootPath;
+
 }

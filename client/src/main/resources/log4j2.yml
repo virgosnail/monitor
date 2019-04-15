@@ -1,0 +1,43 @@
+Configuration:
+  name: monitor-client
+  Properties:
+    Property:
+      - name: log.path
+        value: logs
+      - name: app.name
+        value: monitor-client
+      - name: log.pattern
+        value: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %l: %msg%n"
+
+  Appenders:
+    Console:
+      name: console
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: ${log.pattern}
+
+    RollingFile:
+      name: running_log
+      fileName: ${log.path}/${app.name}-running.log
+      filePattern: "logs/archive/running.log.%d{yyyy-MM-dd-hh-mm}.gz"
+      PatternLayout:
+        charset: utf-8
+        pattern: ${log.pattern}
+      Filters:
+        ThresholdFilter:
+          - level: info
+            onMatch: ACCEPT
+            onMismatch: DENY
+      Policies:
+        SizeBasedTriggeringPolicy:
+          size: 500 MB
+      DefaultRollOverStrategy:
+        max: 200
+
+  Loggers:
+    AsyncRoot:
+      level: info
+      includeLocation: true
+      AppenderRef:
+        - ref: console
+        - ref: running_log

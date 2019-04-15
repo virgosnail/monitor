@@ -1,7 +1,19 @@
-spring:
-  profiles:
-    active: release
+config:
+  #    客户端监听根目录
+  clientPath: D:\monitor\a
+  #    服务端同步根目录
+  serverPath: D:\monitor\b
+  #    服务器IP
+  serverIp: 127.0.0.1
+  #    服务器端口
+  serverPort: 9833
+  #    轮询文件的时间间隔 单位毫秒
+  interval: 1000
+  #    过滤的文件类型，大小写不敏感
+  ignoreTypes: gitignore,iml,md
+  #    是否同步已经存在的文件,此同步忽略上述配置的过滤文件类型
+  synExistedFiles: true
 
 # log4j2 config
-#logging:
-#  config: classpath:log4j2.yml
+logging:
+  config: classpath:log4j2.yml

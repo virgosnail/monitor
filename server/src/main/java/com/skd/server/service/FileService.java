@@ -1,6 +1,6 @@
 package com.skd.server.service;
 
-import com.skd.server.entity.request.FileChangeReq;
+import com.skd.server.model.request.FileChangedReq;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -15,7 +15,7 @@ public interface FileService {
      * @param file
      * @return
      */
-    boolean addFile(FileChangeReq fileInfo, MultipartFile file);
+    boolean addFile(FileChangedReq fileInfo, MultipartFile file);
 
     /**
      * 修改文件，文件夹
@@ -23,13 +23,13 @@ public interface FileService {
      * @param file
      * @return
      */
-    boolean modifyFile(FileChangeReq fileInfo, MultipartFile file);
+    boolean modifyFile(FileChangedReq fileInfo, MultipartFile file);
 
     /**
      * 删除文件，文件夹
      * @param fileInfo
      * @return
      */
-    boolean deleteFile(FileChangeReq fileInfo);
+    boolean deleteFile(FileChangedReq fileInfo);
 
 }

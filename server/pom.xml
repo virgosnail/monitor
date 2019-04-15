@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.1.RELEASE</version>
+        <version>2.1.0.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.skd</groupId>
@@ -16,12 +16,6 @@
 
     <properties>
         <encoding>UTF-8</encoding>
-        <maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
-        <maven-jar-plugin-version>3.1.0</maven-jar-plugin-version>
-        <maven-source-plugin-version>3.0.1</maven-source-plugin-version>
-        <maven-assembly-plugin-version>3.1.0</maven-assembly-plugin-version>
-        <maven-dependency-plugin-version>3.1.0</maven-dependency-plugin-version>
-        <maven-resources-plugin-version>3.1.0</maven-resources-plugin-version>
     </properties>
 
     <dependencies>
@@ -53,6 +47,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.9.7</version>
+        </dependency>
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -68,87 +72,21 @@
 
     <build>
         <!-- 生成的项目压缩包的名字-->
-        <finalName>server</finalName>
-        <!--源代码路径-->
-        <sourceDirectory>src/main/java</sourceDirectory>
-        <!--maven-resources-plugin 插件打包resource文件时会参考此节点的配置-->
-
+        <finalName>monitor-server</finalName>
         <plugins>
-            <!--编译插件-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin-version}</version>
-                <configuration>
-                    <encoding>${encoding}</encoding>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-
-            <!--将项目的源代码的class文件打包到一个jar包-->
-            <!--jar包默认在target目录下-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven-jar-plugin-version}</version>
-                <configuration>
-                    <archive>
-                        <!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
-                        <addMavenDescriptor>true</addMavenDescriptor>
-                        <manifest>
-                            <!-- 是否要把第三方jar放到manifest的classpath中 -->
-                            <addClasspath>true</addClasspath>
-                            <!-- 生成的manifest中classpath的前缀，填写依赖jar包相对于项目jar包的路径-->
-                            <!--我会把项目的jar包也打到lib目录下，所以这里使用当前目录-->
-                            <classpathPrefix>./</classpathPrefix>
-                            <!-- 应用的main class -->
-                            <mainClass>com.skd.server.ServerApplication</mainClass>
-                        </manifest>
-                        <!--将资源文件目录添加到classpath中，打包后运行项目时则会在该目录下加载配置文件-->
-                        <manifestEntries>
-                            <!--填写配置文件相对于项目jar包的路径-->
-                            <!--我的项目jar包在lib目录下，配置文件在和lib同级的conf目录下-->
-                            <Class-Path>../conf/</Class-Path>
-                        </manifestEntries>
-                    </archive>
-                    <!--项目打包为jar包时排除这些文件，如果将配置文件打到jar包，则会优先读取jar包中的配置文件，不会读取conf目录下的配置文件-->
-                    <!--注意这玩意从编译结果目录开始算目录结构-->
-                    <excludes>
-                        <exclude>/*.yaml</exclude>
-                        <exclude>/*.yml</exclude>
-                        <exclude>/*.xml</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven-assembly-plugin-version}</version>
-
-                <configuration>
-                    <!--jar包名字是否在finalName后追加AssemblyId-->
-                    <appendAssemblyId>true</appendAssemblyId>
-                    <descriptors>
-                        <!--xml文件中配置了打包的相关配置-->
-                        <descriptor>src/main/assembly/assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.0.RELEASE</version>
                 <executions>
                     <execution>
-                        <!--名字任意-->
-                        <id>make-assembly</id>
-                        <!-- 绑定到package生命周期阶段上 -->
-                        <phase>package</phase>
                         <goals>
-                            <!-- 只运行一次 -->
-                            <goal>single</goal>
+                            <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-
     </build>
+
 </project>
